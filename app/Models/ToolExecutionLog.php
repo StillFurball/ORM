@@ -39,7 +39,7 @@ class ToolExecutionLog extends Model
     }
 
     /**
-     * Agent yang mengeksekusi alat (SecurityScanner, MalwareScanner, LogAnalyzer, ...).
+     * Agent JobPilot yang mengeksekusi alat (JobDiscoveryAgent, JobMatchingAgent, CvTailoringAgent, EmailApplicationAgent).
      *
      * @return MorphTo<Model, $this>
      */

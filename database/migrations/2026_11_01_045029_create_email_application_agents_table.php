@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('malware_scanners', function (Blueprint $table) {
+        Schema::create('email_application_agents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->boolean('safe_mode')->default(true);
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('malware_scanners');
+        Schema::dropIfExists('email_application_agents');
     }
 };

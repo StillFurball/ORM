@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('log_analyzers', function (Blueprint $table) {
+        Schema::create('job_matching_agents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('llm_model');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('log_analyzers');
+        Schema::dropIfExists('job_matching_agents');
     }
 };

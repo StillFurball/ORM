@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\MalwareScanner;
+use App\Models\JobMatchingAgent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<MalwareScanner>
+ * @extends Factory<JobMatchingAgent>
  */
-class MalwareScannerFactory extends Factory
+class JobMatchingAgentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,8 @@ class MalwareScannerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Malware Scanner '.fake()->numerify('v#.#'),
+            'name' => 'Job Matching Agent',
+            'llm_model' => fake()->randomElement(['qwen3:8b', 'offline']),
         ];
     }
 }

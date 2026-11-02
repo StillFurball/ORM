@@ -18,9 +18,12 @@ class ChatSessionFactory extends Factory
      */
     public function definition(): array
     {
+        $role = fake()->randomElement(['Backend Laravel', 'Frontend React', 'Data Analyst', 'DevOps Engineer', 'Mobile Flutter', 'QA Engineer']);
+        $location = fake()->randomElement(['Indonesia', 'Jakarta', 'Surabaya', 'Jerman', 'remote APAC']);
+
         return [
             'user_id' => User::factory(),
-            'title' => fake()->sentence(4),
+            'title' => "Lowongan {$role} di {$location}",
         ];
     }
 }

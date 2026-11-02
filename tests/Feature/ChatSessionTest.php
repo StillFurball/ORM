@@ -2,8 +2,9 @@
 
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
-use App\Models\LogAnalyzer;
-use App\Models\SecurityScanner;
+use App\Models\EmailApplicationAgent;
+use App\Models\JobDiscoveryAgent;
+use App\Models\JobMatchingAgent;
 use App\Models\ToolExecutionLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -52,17 +53,19 @@ test('relasi user, sesi, pesan, dan log saling terhubung', function () {
         ->and($chatSession->user->chatSessions->modelKeys())->toBe([$chatSession->id]);
 });
 
-test('log alat bersifat polymorphic ke berbagai agent', function () {
-    $securityScanner = SecurityScanner::factory()->create();
-    $logAnalyzer = LogAnalyzer::factory()->create();
+test('log alat bersifat polymorphic ke berbagai agent JobPilot', function () {
+    $discoveryAgent = JobDiscoveryAgent::factory()->create();
+    $emailAgent = EmailApplicationAgent::factory()->create();
 
-    $securityLog = ToolExecutionLog::factory()->for($securityScanner, 'loggable')->create();
-    $analyzerLog = ToolExecutionLog::factory()->for($logAnalyzer, 'loggable')->create();
+    $searchLog = ToolExecutionLog::factory()->for($discoveryAgent, 'loggable')->create();
+    $draftLog = ToolExecutionLog::factory()->for($emailAgent, 'loggable')->create();
 
-    expect($securityLog->loggable)->toBeInstanceOf(SecurityScanner::class)
-        ->and($analyzerLog->loggable)->toBeInstanceOf(LogAnalyzer::class)
-        ->and($securityScanner->logs->modelKeys())->toBe([$securityLog->id])
-        ->and($logAnalyzer->logs->modelKeys())->toBe([$analyzerLog->id]);
+    expect($searchLog->loggable)->toBeInstanceOf(JobDiscoveryAgent::class)
+        ->and($draftLog->loggable)->toBeInstanceOf(EmailApplicationAgent::class)
+        ->and($searchLog->tool_name)->toBe('search_jobs')
+        ->and($draftLog->tool_name)->toBe('draft_email')
+        ->and($discoveryAgent->logs->modelKeys())->toBe([$searchLog->id])
+        ->and($emailAgent->logs->modelKeys())->toBe([$draftLog->id]);
 });
 
 test('menghapus user ikut menghapus sesi, pesan, dan log (cascade)', function () {
@@ -76,19 +79,19 @@ test('menghapus user ikut menghapus sesi, pesan, dan log (cascade)', function ()
 });
 
 test('menghapus agent ikut menghapus log miliknya', function () {
-    $securityScanner = SecurityScanner::factory()->create();
-    ToolExecutionLog::factory(2)->for($securityScanner, 'loggable')->create();
-    $otherLog = ToolExecutionLog::factory()->for(LogAnalyzer::factory(), 'loggable')->create();
+    $discoveryAgent = JobDiscoveryAgent::factory()->create();
+    ToolExecutionLog::factory(2)->for($discoveryAgent, 'loggable')->create();
+    $otherLog = ToolExecutionLog::factory()->for(JobMatchingAgent::factory(), 'loggable')->create();
 
-    $securityScanner->delete();
+    $discoveryAgent->delete();
 
     expect(ToolExecutionLog::pluck('id')->all())->toBe([$otherLog->id]);
 });
 
 test('halaman riwayat obrolan bebas N+1 query', function () {
     // morphTo eager load = 1 query per tipe agent, jadi tipe agent disamakan agar yang diuji hanya jumlah baris
-    $smallSession = createChatSessionWithMessages(1, SecurityScanner::class);
-    $largeSession = createChatSessionWithMessages(10, SecurityScanner::class);
+    $smallSession = createChatSessionWithMessages(1, JobDiscoveryAgent::class);
+    $largeSession = createChatSessionWithMessages(10, JobDiscoveryAgent::class);
 
     expect(countQueriesForShowPage($largeSession))->toBe(countQueriesForShowPage($smallSession));
 });

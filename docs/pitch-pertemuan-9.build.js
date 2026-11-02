@@ -4,11 +4,11 @@ const pptxgen = require("pptxgenjs");
 const { applyTheme } = require("C:/Users/imal_/.claude/skills/synced/4ff19ea0-0ff5-43f9-8dad-4d39f0144f6c_8220a119-079c-4bec-ab72-f456efccf741/pptx/scripts/apply_theme.js");
 
 const REPO = "C:/Users/imal_/Desktop/python/laravel-framework/eager-loading";
-const OUT = path.join(REPO, "docs", "pitch-pertemuan-9.pptx");
+const OUT = path.join(REPO, "pertemuan-9.pptx");
 const SCREENSHOT = path.join(REPO, "docs", "debugbar-chat-session.jpg");
 
 const THEME = {
-  name: "PBKK Agentic AI",
+  name: "PBKK JobPilot",
   headFontFace: "Cambria",
   bodyFontFace: "Calibri",
   colors: {
@@ -29,8 +29,8 @@ const THEME = {
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5 in
-pres.title = "Pitch Relasi Antar Model & Eager Loading";
-pres.author = "Kelompok [__]";
+pres.title = "Pitch JobPilot: Relasi Antar Model & Eager Loading";
+pres.author = "Kelompok 10";
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace };
 const C = pres.SchemeColor;
 const MONO = "Courier New";
@@ -69,9 +69,9 @@ pres.addSection({ title: "Pembuka" });
 {
   const s = pres.addSlide({ masterName: "COVER", sectionTitle: "Pembuka" });
   eyebrow(s, "PBKK · PERTEMUAN 9 · TUGAS KELOMPOK");
-  s.addText("Agentic AI Platform: Relasi Antar Model & Eager Loading", { placeholder: "title" });
-  s.addText("Sesi obrolan, isi pesan, dan log pemanggilan alat oleh agent AI, dimodelkan dengan Eloquent tanpa N+1 query.", { placeholder: "subtitle" });
-  s.addText("Kelompok [__]\n[Nama Anggota 1] · [Nama Anggota 2] · [Nama Anggota 3]", { placeholder: "team" });
+  s.addText("JobPilot Assistant: Relasi Antar Model & Eager Loading", { placeholder: "title" });
+  s.addText("Obrolan kandidat dengan asisten pencari kerja JobPilot dan log alat dari empat agent AI-nya, dimodelkan dengan Eloquent tanpa N+1 query.", { placeholder: "subtitle" });
+  s.addText("Kelompok 10", { placeholder: "team" });
 
   // Motif: rantai tabel inti
   const chain = ["users", "chat_sessions", "chat_messages", "tool_execution_logs"];
@@ -96,7 +96,7 @@ pres.addSection({ title: "Pembuka" });
     x: nodeX, y: 6.3, w: nodeW, h: 0.4, fontFace: MONO, fontSize: 13, color: C.accent6, align: "right", margin: 0,
     isTextBox: true, objectName: "Cover stack",
   });
-  s.addNotes("Pembukaan (±30 detik). Perkenalkan kelompok dan tujuan tugas: membangun pondasi basis data untuk platform Agentic AI, yaitu sesi chat, isi pesan, dan log pemanggilan alat, lengkap dengan relasi Eloquent yang efisien. Rantai di kanan adalah empat tabel inti yang akan dibahas.");
+  s.addNotes("Pembukaan (±30 detik). Perkenalkan kelompok dan proyek JobPilot, asisten AI pencari kerja yang mencari lowongan, menilai kecocokan, menyesuaikan CV, dan menyusun draf email lamaran. Tugas minggu ini membangun pondasi basis datanya: sesi obrolan kandidat dengan asisten, isi pesan, dan log pemanggilan alat oleh agent JobPilot, lengkap dengan relasi Eloquent yang efisien. Rantai di kanan adalah empat tabel inti yang akan dibahas.");
 }
 
 /* ---------- 2. ERD ---------- */
@@ -153,11 +153,15 @@ pres.addSection({ title: "Rancangan & Implementasi" });
   s.addText([
     { text: "morphs('loggable')", options: { fontFace: MONO, fontSize: 16, bold: true, color: C.accent2, breakLine: true } },
     { text: "morphTo() ⇄ morphMany()", options: { fontSize: 13, color: C.accent6 } },
-  ], { x: MX + 0.3, y: bandY, w: 3.4, h: bandH, valign: "middle", margin: 0, isTextBox: true, objectName: "Morph label" });
-  ["SecurityScanner", "MalwareScanner", "LogAnalyzer"].forEach((agent, i) => {
-    s.addText(agent, {
-      shape: pres.shapes.ROUNDED_RECTANGLE, rectRadius: 0.1, x: 4.35 + i * 2.8, y: bandY + 0.25, w: 2.55, h: 0.55,
-      fill: { color: C.accent3 }, color: C.background1, fontSize: 15, bold: true, align: "center", valign: "middle", margin: 0,
+  ], { x: MX + 0.3, y: bandY, w: 2.7, h: bandH, valign: "middle", margin: 0, isTextBox: true, objectName: "Morph label" });
+  const chipX = 3.75, chipGap = 0.14, chipW = (MX + CW - 0.2 - chipX - 3 * chipGap) / 4;
+  [["JobDiscoveryAgent", "search_jobs"], ["JobMatchingAgent", "score_match"], ["CvTailoringAgent", "tailor_cv"], ["EmailApplicationAgent", "draft_email"]].forEach(([agent, tool], i) => {
+    s.addText([
+      { text: agent, options: { fontSize: 13, bold: true, color: C.background1, breakLine: true } },
+      { text: tool, options: { fontFace: MONO, fontSize: 12, color: C.accent2 } },
+    ], {
+      shape: pres.shapes.ROUNDED_RECTANGLE, rectRadius: 0.1, x: chipX + i * (chipW + chipGap), y: bandY + 0.15, w: chipW, h: bandH - 0.3,
+      fill: { color: C.accent3 }, align: "center", valign: "middle", margin: 0,
       objectName: `Agent chip ${agent}`,
     });
   });
@@ -168,7 +172,7 @@ pres.addSection({ title: "Rancangan & Implementasi" });
     { text: ". Hapus user, maka sesi, pesan, dan log ikut terhapus. Kolom morph tidak bisa diberi FK, jadi log milik agent dihapus oleh trait HasToolExecutionLogs.", options: { color: C.text2 } },
   ], { x: MX, y: 5.65, w: CW, h: 0.75, fontSize: 14, valign: "top", margin: 0, isTextBox: true, objectName: "Cascade note" });
 
-  s.addNotes("Rancangan skema (±1 menit). Satu User punya banyak ChatSession, satu sesi punya banyak ChatMessage, satu pesan punya banyak ToolExecutionLog. Semua foreign key memakai cascadeOnDelete dan sudah diuji: menghapus user ikut menghapus sesi, pesan, dan log. Kolom loggable_id dan loggable_type dibuat oleh morphs('loggable') sehingga satu tabel log bisa dipakai tiga tipe agent. Karena kolom morph tidak bisa diberi foreign key, cascade saat agent dihapus dilakukan oleh trait HasToolExecutionLogs lewat event deleting. ERD lengkap ada di README repositori.");
+  s.addNotes("Rancangan skema (±1 menit). Satu User punya banyak ChatSession, satu sesi punya banyak ChatMessage, satu pesan punya banyak ToolExecutionLog. Semua foreign key memakai cascadeOnDelete dan sudah diuji: menghapus user ikut menghapus sesi, pesan, dan log. Kolom loggable_id dan loggable_type dibuat oleh morphs('loggable') sehingga satu tabel log bisa dipakai keempat agent JobPilot: JobDiscoveryAgent memanggil search_jobs, JobMatchingAgent score_match, CvTailoringAgent tailor_cv, dan EmailApplicationAgent draft_email. Setiap tabel agent punya kolom khasnya sendiri, misalnya source, llm_model, atau safe_mode, itulah alasan memakai polymorphic. Karena kolom morph tidak bisa diberi foreign key, cascade saat agent dihapus dilakukan oleh trait HasToolExecutionLogs lewat event deleting. ERD lengkap ada di README repositori.");
 }
 
 /* ---------- 3. Relasi model ---------- */
@@ -186,10 +190,10 @@ pres.addSection({ title: "Rancangan & Implementasi" });
     [model("ChatSession"), code("user()\nmessages()"), code("belongsTo(User)\nhasMany(ChatMessage)")],
     [model("ChatMessage"), code("chatSession()\ntoolExecutionLogs()"), code("belongsTo(ChatSession)\nhasMany(ToolExecutionLog)")],
     [model("ToolExecutionLog"), code("chatMessage()\nloggable()"), code("belongsTo(ChatMessage)\nmorphTo()")],
-    [model("SecurityScanner\nMalwareScanner\nLogAnalyzer"), code("logs()"), code("morphMany(ToolExecutionLog)")],
+    [model("JobDiscoveryAgent\nJobMatchingAgent\nCvTailoringAgent\nEmailApplicationAgent"), code("logs()"), code("morphMany(ToolExecutionLog)")],
   ];
   s.addTable(rows, {
-    x: MX, y: 1.95, w: 8.3, colW: [2.0, 2.8, 3.5], fontSize: 14, color: C.text1, valign: "middle",
+    x: MX, y: 1.95, w: 8.3, colW: [2.55, 2.45, 3.3], fontSize: 14, color: C.text1, valign: "middle",
     border: { type: "solid", pt: 0.75, color: THEME.colors.accent5 }, fill: { color: C.background1 }, margin: [0.06, 0.12, 0.06, 0.12],
     objectName: "Relations table",
   });
@@ -202,13 +206,13 @@ pres.addSection({ title: "Rancangan & Implementasi" });
   s.addText("Data dummy dari factory", {
     x: px + 0.3, y: 2.15, w: pw - 0.6, h: 0.4, fontSize: 16, bold: true, color: C.text1, margin: 0, isTextBox: true, objectName: "Seed panel title",
   });
-  [["5", "user"], ["15", "sesi obrolan"], ["60", "pesan"], ["120", "log alat"]].forEach(([n, label], i) => {
+  [["5", "user"], ["15", "sesi obrolan"], ["60", "pesan"], ["60", "log alat"]].forEach(([n, label], i) => {
     s.addText([
       { text: n, options: { fontFace: THEME.headFontFace, fontSize: 36, bold: true, color: C.accent1 } },
       { text: `  ${label}`, options: { fontSize: 16, color: C.text2 } },
     ], { x: px + 0.3, y: 2.7 + i * 0.85, w: pw - 0.6, h: 0.75, valign: "middle", margin: 0, isTextBox: true, objectName: `Seed stat ${label}` });
   });
-  s.addText("Satu DatabaseSeeder dengan factory bertingkat has().", {
+  s.addText("Alur tiap sesi: cari lowongan → nilai → CV → draf email.", {
     x: px + 0.3, y: 6.15, w: pw - 0.6, h: 0.5, fontSize: 12, color: C.text2, valign: "top", margin: 0, isTextBox: true, objectName: "Seed panel caption",
   });
 
@@ -216,14 +220,14 @@ pres.addSection({ title: "Rancangan & Implementasi" });
     x: MX, y: 5.45, w: 8.3, h: 0.65, fontSize: 14, color: C.text2, valign: "top", margin: 0, isTextBox: true, objectName: "Naming note",
   });
 
-  s.addNotes("Model dan ORM (±1 menit). Relasi yang mengembalikan banyak data diberi nama jamak: chatSessions, messages, toolExecutionLogs, logs. Relasi yang mengembalikan satu data diberi nama tunggal: user, chatSession, chatMessage. Setiap method memakai return type HasMany, BelongsTo, MorphTo, atau MorphMany. Seeder memakai factory bertingkat dengan has() sehingga satu perintah migrate:fresh --seed langsung mengisi seluruh rantai: 5 user, 15 sesi, 60 pesan, 120 log.");
+  s.addNotes("Model dan ORM (±1 menit). Relasi yang mengembalikan banyak data diberi nama jamak: chatSessions, messages, toolExecutionLogs, logs. Relasi yang mengembalikan satu data diberi nama tunggal: user, chatSession, chatMessage. Setiap method memakai return type HasMany, BelongsTo, MorphTo, atau MorphMany. Seeder memakai factory dengan has() dan for() sehingga satu perintah migrate:fresh --seed langsung mengisi seluruh rantai: 5 user, 15 sesi, 60 pesan, 60 log. Setiap sesi mengikuti alur JobPilot: kandidat meminta lowongan, asisten memanggil search_jobs dan score_match, lalu kandidat meminta CV dan email, asisten memanggil tailor_cv dan draft_email.");
 }
 
 /* ---------- 4. Eager loading ---------- */
 {
   const s = pres.addSlide({ masterName: "CONTENT_DARK", sectionTitle: "Rancangan & Implementasi" });
   eyebrow(s, "OPTIMASI EAGER LOADING · 20%");
-  s.addText("Riwayat obrolan cukup 9 query", { placeholder: "title" });
+  s.addText("Riwayat obrolan JobPilot cukup 10 query", { placeholder: "title" });
 
   const leftW = 5.0;
   s.addText([
@@ -238,7 +242,7 @@ pres.addSection({ title: "Rancangan & Implementasi" });
   });
 
   s.addText([
-    { text: "9", options: { fontFace: THEME.headFontFace, fontSize: 66, bold: true, color: C.accent2 } },
+    { text: "10", options: { fontFace: THEME.headFontFace, fontSize: 66, bold: true, color: C.accent2 } },
     { text: "  query untuk satu halaman", options: { fontSize: 16, color: C.accent6, breakLine: true } },
     { text: "konstan, berapa pun jumlah pesan dan log", options: { fontSize: 14, color: C.accent6 } },
   ], { x: MX, y: 3.6, w: leftW, h: 1.35, valign: "middle", margin: 0, isTextBox: true, objectName: "Query count stat" });
@@ -249,13 +253,13 @@ pres.addSection({ title: "Rancangan & Implementasi" });
     { text: "Test Pest: sesi 1 pesan dan 10 pesan menjalankan jumlah query yang sama.", options: { bullet: true } },
   ], { x: MX, y: 5.1, w: leftW, h: 1.6, fontSize: 14, color: C.background2, paraSpaceAfter: 6, valign: "top", margin: 0, isTextBox: true, objectName: "Eager bullets" });
 
-  const imgX = MX + leftW + 0.45, imgW = W - MX - imgX, imgH = imgW / (1523 / 784);
-  s.addImage({ path: SCREENSHOT, x: imgX, y: 1.95, w: imgW, h: imgH, altText: "Laravel Debugbar pada /chat-sessions/1: 9 statement, setiap relasi dimuat dengan satu query WHERE IN", objectName: "Debugbar screenshot" });
+  const imgX = MX + leftW + 0.45, imgW = W - MX - imgX, imgH = imgW / (1523 / 990);
+  s.addImage({ path: SCREENSHOT, x: imgX, y: 1.95, w: imgW, h: imgH, altText: "Laravel Debugbar pada /chat-sessions/1: 10 statement, setiap relasi dimuat dengan satu query WHERE IN", objectName: "Debugbar screenshot" });
   s.addText("Laravel Debugbar · tab Queries · /chat-sessions/1", {
     x: imgX, y: 1.95 + imgH + 0.1, w: imgW, h: 0.3, fontSize: 11, color: C.accent6, margin: 0, isTextBox: true, objectName: "Screenshot caption",
   });
 
-  s.addNotes("Optimasi eager loading (±1,5 menit, bagian terpenting). Di controller, satu pemanggilan load() dengan notasi titik memuat pesan, log alat, dan agent sekaligus. Screenshot Laravel Debugbar menunjukkan 9 statement: 3 dari session, user login, dan route binding, lalu 1 query pesan, 1 query log, 3 query agent (satu per tipe karena polymorphic), dan 1 update session. Tidak ada query yang berulang per baris. Sebagai pengaman, Model::preventLazyLoading() aktif di luar production, dan ada test Pest yang membandingkan jumlah query untuk sesi kecil dan besar.");
+  s.addNotes("Optimasi eager loading (±1,5 menit, bagian terpenting). Di controller, satu pemanggilan load() dengan notasi titik memuat pesan, log alat, dan agent sekaligus. Screenshot Laravel Debugbar menunjukkan 10 statement: 3 dari session, user login, dan route binding, lalu 1 query pesan, 1 query log, 4 query agent JobPilot (satu per tipe karena polymorphic), dan 1 update session. Tidak ada query yang berulang per baris. Sebagai pengaman, Model::preventLazyLoading() aktif di luar production, dan ada test Pest yang membandingkan jumlah query untuk sesi kecil dan besar.");
 }
 
 /* ---------- 5. Rubrik ---------- */
@@ -268,8 +272,8 @@ pres.addSection({ title: "Penutup" });
   const items = [
     ["35%", "Skema & Migrasi", "4 tabel inti, FK cascadeOnDelete, ERD di README"],
     ["25%", "Model & ORM", "hasMany / belongsTo dengan nama jamak dan tunggal"],
-    ["20%", "Eager Loading", "with() bertingkat, 9 query di Debugbar, test N+1"],
-    ["10%", "Challenge A+", "morphs('loggable') untuk 3 tipe agent"],
+    ["20%", "Eager Loading", "with() bertingkat, 10 query di Debugbar, test N+1"],
+    ["10%", "Challenge A+", "morphs('loggable') untuk 4 agent JobPilot"],
     ["10%", "Kerapian PSR-12", "Laravel Pint bersih, 33 test Pest lulus"],
   ];
   const gap = 0.3, cw = (CW - 4 * gap) / 5, cy = 2.25, ch = 2.5;
@@ -289,14 +293,12 @@ pres.addSection({ title: "Penutup" });
     x: MX, y: 5.15, w: CW, h: 1.15, rectRadius: 0.12, fill: { color: C.text1 }, line: { color: C.text1, width: 0 }, objectName: "Closing band",
   });
   s.addText([
-    { text: "Repositori: ", options: { bold: true, color: C.background1 } },
-    { text: "[github.com/__/__]", options: { fontFace: MONO, color: C.accent2 } },
-    { text: "   ·   Akun demo: ", options: { bold: true, color: C.background1 } },
+    { text: "Akun demo: ", options: { bold: true, color: C.background1 } },
     { text: "test@example.com", options: { fontFace: MONO, color: C.accent2, breakLine: true } },
-    { text: "Tambahan: login Breeze + policy, sehingga user hanya bisa membuka sesi obrolannya sendiri.", options: { color: C.accent6 } },
+    { text: "Tambahan: login Breeze + policy, sehingga kandidat hanya bisa membuka sesi obrolannya sendiri.", options: { color: C.accent6 } },
   ], { x: MX + 0.3, y: 5.15, w: CW - 0.6, h: 1.15, fontSize: 15, valign: "middle", margin: 0, isTextBox: true, objectName: "Closing text" });
 
-  s.addNotes("Penutup (±1 menit). Petakan hasil ke rubrik: skema dan migrasi dengan cascade, relasi sesuai konvensi, eager loading bertingkat yang terbukti di Debugbar dan test, challenge polymorphic logging, dan kode yang dirapikan dengan Pint. Tambahan: halaman riwayat obrolan dilindungi login Breeze dan policy, jadi user hanya bisa membuka sesinya sendiri. Tutup dengan tautan repositori lalu buka sesi tanya jawab.");
+  s.addNotes("Penutup (±1 menit). Petakan hasil ke rubrik: skema dan migrasi dengan cascade, relasi sesuai konvensi, eager loading bertingkat yang terbukti di Debugbar dan test, challenge polymorphic logging, dan kode yang dirapikan dengan Pint. Tambahan: halaman riwayat obrolan dilindungi login Breeze dan policy, jadi user hanya bisa membuka sesinya sendiri. Tutup dengan menegaskan bahwa skema ini langsung menjadi pondasi fitur asisten JobPilot, lalu buka sesi tanya jawab.");
 }
 
 (async () => {

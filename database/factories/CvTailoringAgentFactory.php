@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\LogAnalyzer;
+use App\Models\CvTailoringAgent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<LogAnalyzer>
+ * @extends Factory<CvTailoringAgent>
  */
-class LogAnalyzerFactory extends Factory
+class CvTailoringAgentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,8 @@ class LogAnalyzerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Log Analyzer '.fake()->numerify('v#.#'),
+            'name' => 'CV Tailoring Agent',
+            'llm_model' => fake()->randomElement(['qwen3:8b', 'offline']),
         ];
     }
 }

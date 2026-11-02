@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\SecurityScanner;
+use App\Models\EmailApplicationAgent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<SecurityScanner>
+ * @extends Factory<EmailApplicationAgent>
  */
-class SecurityScannerFactory extends Factory
+class EmailApplicationAgentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,8 @@ class SecurityScannerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Security Scanner '.fake()->numerify('v#.#'),
+            'name' => 'Email Application Agent',
+            'safe_mode' => true,
         ];
     }
 }
