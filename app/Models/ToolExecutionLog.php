@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Models;
+
+use Database\Factories\ToolExecutionLogFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
+#[Fillable(['chat_message_id', 'loggable_id', 'loggable_type', 'tool_name', 'input', 'output', 'status', 'duration_ms'])]
+class ToolExecutionLog extends Model
+{
+    /** @use HasFactory<ToolExecutionLogFactory> */
+    use HasFactory;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'input' => 'array',
+            'output' => 'array',
+        ];
+    }
+
+    /**
+     * Pesan yang memicu pemanggilan alat ini.
+     *
+     * @return BelongsTo<ChatMessage, $this>
+     */
+    public function chatMessage(): BelongsTo
+    {
+        return $this->belongsTo(ChatMessage::class);
+    }
+
+    /**
+     * Agent yang mengeksekusi alat (SecurityScanner, MalwareScanner, LogAnalyzer, ...).
+     *
+     * @return MorphTo<Model, $this>
+     */
+    public function loggable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+}
